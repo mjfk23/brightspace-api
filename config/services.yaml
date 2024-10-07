@@ -1,0 +1,29 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Brightspace\Api\:
+    resource: "../src/"
+    exclude:
+      - "../src/DependencyInjection/"
+      - "../src/Entity/"
+      - "../src/Kernel.php"
+
+  Brightspace\Api\Auth\Model\OAuthConfig:
+    arguments:
+      $hostName: "%env(string:default::D2L_HOST_NAME)%"
+      $orgId: "%env(int:default::D2L_ORG_ID)%"
+      $clientId: "%env(string:default::D2L_CLIENT_ID)%"
+      $clientSecret: "%env(string:default::D2L_CLIENT_SECRET)%"
+      $redirectUri: "%env(string:default::D2L_REDIRECT_URI)%"
+      $scope: "%env(string:default::D2L_SCOPE)%"
+
+  Brightspace\Api\Auth\Model\LoginCredentials:
+    arguments:
+      $user: "%env(string:default::D2L_USER_NAME)%"
+      $pass: "%env(string:default::D2L_PASS)%"
+      $mfa: "%env(string:default::D2L_MFA)%"
+
+  Gadget\Http\OAuth\OAuthConfig:
+    alias: Brightspace\Api\Auth\Model\OAuthConfig

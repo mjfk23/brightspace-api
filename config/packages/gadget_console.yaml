@@ -1,0 +1,5 @@
+services:
+    Gadget\Console\:
+        autowire: true
+        autoconfigure: true
+        resource: '%kernel.project_dir%/vendor/mjfk23/gadget-console/src/'
