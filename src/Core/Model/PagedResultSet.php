@@ -12,9 +12,10 @@ use Gadget\Io\Cast;
 final class PagedResultSet
 {
     /**
+     * @template TValue
      * @param mixed $values
-     * @param (callable(mixed $v): T) $toValue
-     * @return self<T>
+     * @param (callable(mixed $v): TValue) $toValue
+     * @return self<TValue>
      */
     public static function create(
         mixed $values,
