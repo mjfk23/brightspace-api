@@ -1,5 +1,0 @@
-services:
-    Gadget\:
-        autowire: true
-        autoconfigure: true
-        resource: '%kernel.project_dir%/vendor/mjfk23/gadget-core/src/'
