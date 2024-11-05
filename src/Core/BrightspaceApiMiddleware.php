@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Brightspace\Api\Core;
 
+use Brightspace\Api\Auth\Middleware\LoginMiddleware;
 use Brightspace\Api\Auth\Model\OAuthConfig;
 use Brightspace\Api\Core\Model\ProductVersion;
 use Gadget\Http\ApiClient;
-use Gadget\Http\OAuth\OAuthMiddleware;
 use Gadget\Io\Cast;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -19,13 +19,13 @@ class BrightspaceApiMiddleware implements MiddlewareInterface
 {
     /**
      * @param OAuthConfig $config
-     * @param OAuthMiddleware $oauthMiddleware
+     * @param LoginMiddleware $loginMiddleware
      * @param CacheItemPoolInterface $cache
      * @param ApiClient $apiClient
      */
     public function __construct(
         private OAuthConfig $config,
-        private OAuthMiddleware $oauthMiddleware,
+        private LoginMiddleware $loginMiddleware,
         private CacheItemPoolInterface $cache,
         private ApiClient $apiClient
     ) {
@@ -37,27 +37,40 @@ class BrightspaceApiMiddleware implements MiddlewareInterface
         ServerRequestInterface $request,
         RequestHandlerInterface $handler
     ): ResponseInterface {
+        return $this->loginMiddleware->process(
+            $this->processUri($request),
+            $handler
+        );
+    }
+
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return ServerRequestInterface
+     */
+    private function processUri(ServerRequestInterface $request): ServerRequestInterface
+    {
         $uri = $request->getUri();
-        if ($uri->getScheme() === 'd2l') {
-            $oauthKey = $request->getAttribute($this->config->keyAttrName);
-            $request = $request
-                ->withUri(
-                    $uri
-                        ->withPath($this->getPath($uri->getHost(), $uri->getPath()))
-                        ->withHost($this->config->hostName)
-                        ->withScheme("https")
-                )
-                ->withAttribute(
-                    $this->config->keyAttrName,
-                    match (true) {
-                        is_string($oauthKey) => $oauthKey,
-                        is_null($oauthKey) => $this->config->defaultKey,
-                        default => false
-                    }
-                );
+        if ($uri->getScheme() !== 'd2l') {
+            return $request;
         }
 
-        return $this->oauthMiddleware->process($request, $handler);
+        $oauthKey = $request->getAttribute($this->config->keyAttrName);
+        return $request
+            ->withUri(
+                $uri
+                    ->withPath($this->getPath($uri->getHost(), $uri->getPath()))
+                    ->withHost($this->config->hostName)
+                    ->withScheme("https")
+            )
+            ->withAttribute(
+                $this->config->keyAttrName,
+                match (true) {
+                    is_string($oauthKey) => $oauthKey,
+                    is_null($oauthKey) => $this->config->defaultKey,
+                    default => false
+                }
+            );
     }
 
 

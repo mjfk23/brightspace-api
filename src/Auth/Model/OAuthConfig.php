@@ -17,6 +17,8 @@ final class OAuthConfig extends BaseOAuthConfig
      * @param string $scope
      * @param string $keyAttrName
      * @param string $defaultKey
+     * @param string $loginKeyAttrName
+     * @param string $defaultLoginKey
      */
     public function __construct(
         public string $hostName,
@@ -26,7 +28,9 @@ final class OAuthConfig extends BaseOAuthConfig
         public string $redirectUri,
         public string $scope,
         public string $keyAttrName = 'oauthTokenKey',
-        public string $defaultKey = 'default'
+        public string $defaultKey = 'oauthDefault',
+        public string $loginKeyAttrName = 'loginTokenKey',
+        public string $defaultLoginKey = 'loginDefault'
     ) {
         parent::__construct(
             authCodeUri: 'https://auth.brightspace.com/oauth2/auth',
