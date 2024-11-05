@@ -83,7 +83,7 @@ class BrightspaceApiMiddleware implements MiddlewareInterface
         string $productCode,
         string $path
     ): string {
-        return (str_starts_with($path, '/d2l/api/'))
+        return (str_starts_with($path, '/d2l/api/')) || $productCode === 'web'
             ? $path
             : sprintf(
                 "/d2l/api/%s/%s%s",
