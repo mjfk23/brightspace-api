@@ -7,9 +7,7 @@ namespace Brightspace\Api\Auth\Command;
 use Brightspace\Api\Auth\Factory\LoginTokenFactory;
 use Brightspace\Api\Auth\Factory\OAuthTokenFactory;
 use Brightspace\Api\Auth\Model\LoginCredentials;
-use Brightspace\Api\Auth\Model\OAuthConfig;
-use Brightspace\Api\Core\BrightspaceApiClient;
-use Brightspace\Api\Versions\VersionsApiController;
+use Brightspace\Api\Auth\Model\AuthConfig;
 use Gadget\Http\OAuth\OAuthToken;
 use Gadget\Http\OAuth\OAuthTokenCache;
 use Gadget\Io\JSON;
@@ -24,13 +22,13 @@ use Symfony\Component\Console\Question\Question;
 final class AuthCommand extends Command
 {
     /**
-     * @param OAuthConfig $oauthConfig
+     * @param AuthConfig $authConfig
      * @param LoginTokenFactory $loginTokenFactory
      * @param OAuthTokenFactory $oauthTokenFactory
      * @param OAuthTokenCache $oauthTokenCache
      */
     public function __construct(
-        private OAuthConfig $oauthConfig,
+        private AuthConfig $authConfig,
         private LoginTokenFactory $loginTokenFactory,
         private OAuthTokenFactory $oauthTokenFactory,
         private OAuthTokenCache $oauthTokenCache
@@ -45,7 +43,7 @@ final class AuthCommand extends Command
         OutputInterface $output
     ): int {
         $oauthToken = $this->getOAuthToken($input, $output);
-        $this->oauthTokenCache->set($this->oauthConfig->defaultKey, $oauthToken);
+        $this->oauthTokenCache->set($this->authConfig->defaultKey, $oauthToken);
         $output->writeln(JSON::encode($oauthToken, JSON_PRETTY_PRINT));
 
         return self::SUCCESS;
@@ -61,7 +59,7 @@ final class AuthCommand extends Command
         InputInterface $input,
         OutputInterface $output
     ): OAuthToken {
-        return $this->oauthTokenCache->get($this->oauthConfig->defaultKey) ??
+        return $this->oauthTokenCache->get($this->authConfig->defaultKey) ??
             $this->oauthTokenFactory->fromLoginToken($this->getLoginToken($input, $output));
     }
 

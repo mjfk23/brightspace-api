@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Brightspace\Api\Auth\Factory;
 
-use Brightspace\Api\Auth\Model\OAuthConfig;
+use Brightspace\Api\Auth\Model\AuthConfig;
 use Gadget\Http\ApiClient;
 use Gadget\Http\OAuth\OAuthToken;
 use Gadget\Http\OAuth\OAuthTokenFactory as BaseOAuthTokenFactory;
@@ -14,11 +14,11 @@ final class OAuthTokenFactory extends BaseOAuthTokenFactory
 {
     /** @inheritdoc */
     public function __construct(
-        private OAuthConfig $brightspaceConfig,
+        private AuthConfig $authConfig,
         ApiClient $apiClient,
         CacheItemPoolInterface $cache
     ) {
-        parent::__construct($brightspaceConfig, $apiClient, $cache);
+        parent::__construct($authConfig, $apiClient, $cache);
     }
 
 
@@ -57,7 +57,7 @@ final class OAuthTokenFactory extends BaseOAuthTokenFactory
 
         do {
             $request = $this->apiClient->createRequest('GET', $url);
-            if (str_starts_with($url, "https://{$this->brightspaceConfig->hostName}")) {
+            if (str_starts_with($url, "https://{$this->authConfig->hostName}")) {
                 $request = $request->withHeader('Cookie', $loginToken);
             }
             $response = $this->apiClient->sendRequest($request);

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Brightspace\Api\Auth;
+namespace Brightspace\Api\Auth\Cache;
 
 use Brightspace\Api\Auth\Factory\LoginTokenFactory;
 use Brightspace\Api\Auth\Model\LoginCredentials;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
-class LoginTokenCache
+final class LoginTokenCache
 {
     /**
      * @param CacheItemPoolInterface $cache

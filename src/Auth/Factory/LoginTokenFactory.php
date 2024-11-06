@@ -6,7 +6,7 @@ namespace Brightspace\Api\Auth\Factory;
 
 use Brightspace\Api\Auth\Model\LoginContext;
 use Brightspace\Api\Auth\Model\LoginCredentials;
-use Brightspace\Api\Auth\Model\OAuthConfig;
+use Brightspace\Api\Auth\Model\AuthConfig;
 use Gadget\Http\ApiClient;
 use Gadget\Security\MFA\TOTP;
 use Psr\Http\Message\ResponseInterface;
@@ -23,11 +23,11 @@ final class LoginTokenFactory
 
 
     /**
-     * @param OAuthConfig $config
+     * @param AuthConfig $config
      * @param ApiClient $apiClient
      */
     public function __construct(
-        private OAuthConfig $config,
+        private AuthConfig $config,
         private ApiClient $apiClient
     ) {
         $this->context = new LoginContext();

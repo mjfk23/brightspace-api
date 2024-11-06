@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Brightspace\Api\Auth\Model;
 
-use Gadget\Http\OAuth\OAuthConfig as BaseOAuthConfig;
+use Gadget\Http\OAuth\OAuthConfig;
 
-final class OAuthConfig extends BaseOAuthConfig
+final class AuthConfig extends OAuthConfig
 {
     /**
      * @param string $hostName
