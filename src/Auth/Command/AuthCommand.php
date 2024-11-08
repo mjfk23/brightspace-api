@@ -4,17 +4,19 @@ declare(strict_types=1);
 
 namespace Brightspace\Api\Auth\Command;
 
+use Brightspace\Api\Auth\Factory\AuthCodeFactory;
 use Brightspace\Api\Auth\Factory\LoginTokenFactory;
-use Brightspace\Api\Auth\Factory\OAuthTokenFactory;
 use Brightspace\Api\Auth\Model\LoginCredentials;
-use Brightspace\Api\Auth\Model\AuthConfig;
-use Gadget\Http\OAuth\OAuthToken;
-use Gadget\Http\OAuth\OAuthTokenCache;
+use Brightspace\Api\Auth\Model\Config;
+use Gadget\Http\OAuth\Cache\TokenCache;
+use Gadget\Http\OAuth\Factory\TokenFactory;
+use Gadget\Http\OAuth\Model\Token;
 use Gadget\Io\JSON;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
 
@@ -22,18 +24,29 @@ use Symfony\Component\Console\Question\Question;
 final class AuthCommand extends Command
 {
     /**
-     * @param AuthConfig $authConfig
+     * @param Config $config
      * @param LoginTokenFactory $loginTokenFactory
-     * @param OAuthTokenFactory $oauthTokenFactory
-     * @param OAuthTokenCache $oauthTokenCache
+     * @param AuthCodeFactory $authCodeFactory
+     * @param TokenFactory $tokenFactory
+     * @param TokenCache $tokenCache
      */
     public function __construct(
-        private AuthConfig $authConfig,
+        private Config $config,
         private LoginTokenFactory $loginTokenFactory,
-        private OAuthTokenFactory $oauthTokenFactory,
-        private OAuthTokenCache $oauthTokenCache
+        private AuthCodeFactory $authCodeFactory,
+        private TokenFactory $tokenFactory,
+        private TokenCache $tokenCache
     ) {
         parent::__construct();
+    }
+
+
+    /**
+     * @return void
+     */
+    protected function configure(): void
+    {
+        $this->addOption('use-default', null, InputOption::VALUE_NONE, 'Use default credentials');
     }
 
 
@@ -42,9 +55,9 @@ final class AuthCommand extends Command
         InputInterface $input,
         OutputInterface $output
     ): int {
-        $oauthToken = $this->getOAuthToken($input, $output);
-        $this->oauthTokenCache->set($this->authConfig->defaultKey, $oauthToken);
-        $output->writeln(JSON::encode($oauthToken, JSON_PRETTY_PRINT));
+        $token = $this->tokenCache->get($this->config->tokenCacheKey)
+            ?? $this->createToken($input, $output);
+        $output->writeln(JSON::encode($token, JSON_PRETTY_PRINT));
 
         return self::SUCCESS;
     }
@@ -53,35 +66,42 @@ final class AuthCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return OAuthToken
+     * @return Token
      */
-    private function getOAuthToken(
+    private function createToken(
         InputInterface $input,
         OutputInterface $output
-    ): OAuthToken {
-        return $this->oauthTokenCache->get($this->authConfig->defaultKey) ??
-            $this->oauthTokenFactory->fromLoginToken($this->getLoginToken($input, $output));
+    ): Token {
+        $credentials = $this->getCredentials($input, $output);
+        $loginToken = $this->loginTokenFactory->create($credentials);
+        $authCode = $this->authCodeFactory->createFromLoginToken($loginToken);
+        $token = $this->tokenFactory->createFromAuthCode($authCode);
+        $this->tokenCache->set($this->config->tokenCacheKey, $token);
+        return $token;
     }
 
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return string
+     * @return LoginCredentials|null
      */
-    private function getLoginToken(
+    private function getCredentials(
         InputInterface $input,
         OutputInterface $output
-    ): string {
+    ): LoginCredentials|null {
+        if ($input->getOption('use-default') === true) {
+            return null;
+        }
         $username = $this->getUsername($input, $output);
         $password = $this->getPassword($input, $output);
         $mfaToken = $this->getMFAToken($input, $output);
 
-        return $this->loginTokenFactory->create(new LoginCredentials(
+        return new LoginCredentials(
             $username,
             $password,
             $mfaToken
-        ));
+        );
     }
 
 

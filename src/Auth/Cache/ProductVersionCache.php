@@ -5,20 +5,21 @@ declare(strict_types=1);
 namespace Brightspace\Api\Auth\Cache;
 
 use Brightspace\Api\Core\Model\ProductVersion;
+use Gadget\Cache\CacheItemPool;
 use Gadget\Http\ApiClient;
 use Gadget\Io\Cast;
-use Psr\Cache\CacheItemPoolInterface;
 
 final class ProductVersionCache
 {
     /**
-     * @param CacheItemPoolInterface $cache
+     * @param CacheItemPool $cache
      * @param ApiClient $apiClient
      */
     public function __construct(
-        private CacheItemPoolInterface $cache,
+        private CacheItemPool $cache,
         private ApiClient $apiClient
     ) {
+        $this->cache = $cache->withNamespace(self::class);
     }
 
 
@@ -37,7 +38,7 @@ final class ProductVersionCache
      */
     public function getVersions(): array
     {
-        $cacheItem = $this->cache->getItem(hash('SHA256', sprintf('%s::%s', static::class, 'productVersions')));
+        $cacheItem = $this->cache->get('productVersions');
         /** @var array<string,ProductVersion>|null $versions */
         $versions = $cacheItem->isHit() ? $cacheItem->get() : null;
         if ($versions === null) {
@@ -54,7 +55,11 @@ final class ProductVersionCache
     private function fetchVersions(): array
     {
         return Cast::toTypedMap(
-            $this->apiClient->sendApiRequest('GET', 'd2l://api/d2l/api/versions/'),
+            $this->apiClient->sendApiRequest(
+                method: 'GET',
+                uri: 'd2l://api/d2l/api/versions/',
+                parseResponse: ApiClient::jsonResponse(...)
+            ),
             $this->createVersion(...),
             fn(ProductVersion $pv): string => $pv->ProductCode
         );

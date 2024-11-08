@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Brightspace\Api\Auth\Factory;
 
+use Brightspace\Api\Auth\Model\Config;
 use Brightspace\Api\Auth\Model\LoginContext;
 use Brightspace\Api\Auth\Model\LoginCredentials;
-use Brightspace\Api\Auth\Model\AuthConfig;
+use Brightspace\Api\Core\BrightspaceApiClient;
 use Gadget\Http\ApiClient;
 use Gadget\Security\MFA\TOTP;
 use Psr\Http\Message\ResponseInterface;
@@ -23,23 +24,30 @@ final class LoginTokenFactory
 
 
     /**
-     * @param AuthConfig $config
+     * @param Config $config
      * @param ApiClient $apiClient
+     * @param LoginCredentials|null $credentials
      */
     public function __construct(
-        private AuthConfig $config,
-        private ApiClient $apiClient
+        private Config $config,
+        private ApiClient $apiClient,
+        private LoginCredentials|null $credentials = null
     ) {
         $this->context = new LoginContext();
     }
 
 
     /**
-     * @param LoginCredentials $credentials
+     * @param LoginCredentials|null $credentials
      * @return string
      */
-    public function create(LoginCredentials $credentials): string
+    public function create(LoginCredentials|null $credentials = null): string
     {
+        $credentials ??= $this->credentials;
+        if ($credentials === null) {
+            throw new \RuntimeException();
+        }
+
         $this->context = new LoginContext($credentials);
         return $this
             ->submitCredentials()
@@ -53,21 +61,18 @@ final class LoginTokenFactory
      */
     private function submitCredentials(): self
     {
-        return $this->getTokenFromResponse(
-            $this->apiClient->sendRequest(
-                $this->apiClient->createApiRequest(
-                    method: 'POST',
-                    uri: sprintf("https://%s%s", $this->config->hostName, self::LOGIN_URI),
-                    headers: ['Content-Type' => 'application/x-www-form-urlencoded'],
-                    body: [
-                        'd2l_referrer' => '',
-                        'noredirect'   => '1',
-                        'loginPath'    => self::LOGIN_URI,
-                        'userName'     => $this->context->user,
-                        'password'     => $this->context->pass
-                    ]
-                )
-            )
+        return $this->apiClient->sendApiRequest(
+            method: 'POST',
+            uri: "d2l://web" . self::LOGIN_URI,
+            headers: ['Content-Type' => 'application/x-www-form-urlencoded'],
+            body: [
+                'd2l_referrer' => '',
+                'noredirect'   => '1',
+                'loginPath'    => self::LOGIN_URI,
+                'userName'     => $this->context->user,
+                'password'     => $this->context->pass
+            ],
+            parseResponse: $this->getTokenFromResponse(...)
         );
     }
 
@@ -106,13 +111,12 @@ final class LoginTokenFactory
             $this->context->xsrfName,
             $this->context->xsrfCode,
             $this->context->hitCodeSeed
-        ) = $this->parseMFA(
-            $this->apiClient->sendRequest($this->apiClient->createApiRequest(
-                method: 'GET',
-                uri: sprintf("https://%s%s", $this->config->hostName, self::MFA_URI),
-                headers: ['Cookie' => $this->context->loginToken]
-            ))
-        );
+        ) = $this->parseMFA($this->apiClient->sendApiRequest(
+            method: 'GET',
+            uri: "d2l://web" . self::MFA_URI,
+            headers: ['Cookie' => $this->context->loginToken],
+            parseResponse: ApiClient::rawResponse(...)
+        ));
 
         $rightNow = time();
         $this->context->hitCode = intval($this->context->hitCodeSeed) + ((1000 * $rightNow + 100000000) % 100000000);
@@ -134,27 +138,21 @@ final class LoginTokenFactory
      */
     private function submitMFA(): self
     {
-        return $this->getTokenFromResponse(
-            $this->apiClient->sendRequest($this->apiClient->createApiRequest(
-                method: 'POST',
-                uri: sprintf(
-                    "https://%s%s%s",
-                    $this->config->hostName,
-                    self::MFA_URI,
-                    "?ou={$this->config->orgId}&d2l_rh=rpc&d2l_rt=call"
-                ),
-                headers: [
-                    'Content-Type' => 'application/x-www-form-urlencoded',
-                    'Cookie' => $this->context->loginToken
-                ],
-                body: [
-                    'd2l_rf' => 'VerifyPin',
-                    'params' => '{"param1":"' . $this->context->mfaCode . '"}',
-                    "{$this->context->xsrfName}" => $this->context->xsrfCode,
-                    'd2l_hitcode' => $this->context->hitCode,
-                    'd2l_action' => 'rpc'
-                ]
-            ))
+        return $this->apiClient->sendApiRequest(
+            method: 'POST',
+            uri: "d2l://web" .  self::MFA_URI . "?ou={$this->config->orgId}&d2l_rh=rpc&d2l_rt=call",
+            headers: [
+                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Cookie' => $this->context->loginToken
+            ],
+            body: [
+                'd2l_rf' => 'VerifyPin',
+                'params' => '{"param1":"' . $this->context->mfaCode . '"}',
+                "{$this->context->xsrfName}" => $this->context->xsrfCode,
+                'd2l_hitcode' => $this->context->hitCode,
+                'd2l_action' => 'rpc'
+            ],
+            parseResponse: $this->getTokenFromResponse(...)
         );
     }
 
@@ -164,12 +162,11 @@ final class LoginTokenFactory
      */
     private function processLoginActions(): self
     {
-        return $this->getTokenFromResponse(
-            $this->apiClient->sendRequest($this->apiClient->createApiRequest(
-                method: 'GET',
-                uri: sprintf("https://%s%s", $this->config->hostName, self::PROCESS_LOGIN_URI),
-                headers: ['Cookie' => $this->context->loginToken]
-            ))
+        return $this->apiClient->sendApiRequest(
+            method: 'GET',
+            uri: "d2l://web" . self::PROCESS_LOGIN_URI,
+            headers: ['Cookie' => $this->context->loginToken],
+            parseResponse: $this->getTokenFromResponse(...)
         );
     }
 

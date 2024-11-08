@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Brightspace\Api\Core\Middleware;
 
 use Brightspace\Api\Auth\Cache\ProductVersionCache;
-use Brightspace\Api\Auth\Model\AuthConfig;
+use Brightspace\Api\Auth\Model\Config;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -14,11 +14,11 @@ use Psr\Http\Server\RequestHandlerInterface;
 final class UriMiddleware implements MiddlewareInterface
 {
     /**
-     * @param AuthConfig $authConfig
+     * @param Config $config
      * @param ProductVersionCache $productVersionCache
      */
     public function __construct(
-        private AuthConfig $authConfig,
+        private Config $config,
         private ProductVersionCache $productVersionCache
     ) {
     }
@@ -36,7 +36,7 @@ final class UriMiddleware implements MiddlewareInterface
                     ->withUri(
                         $uri
                             ->withPath($this->getPath($uri->getHost(), $uri->getPath()))
-                            ->withHost($this->authConfig->hostName)
+                            ->withHost($this->config->hostName)
                             ->withScheme("https")
                     )
                 : $request
