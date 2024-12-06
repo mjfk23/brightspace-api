@@ -1,0 +1,44 @@
+{
+  "name": "mjfk23/brightspace-api",
+  "description": "",
+  "type": "library",
+  "keywords": [],
+  "homepage": "https://github.com/mjfk23/brightspace-api",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Melody Kimball",
+      "role": "lead"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/mjfk23/brightspace-api/issues",
+    "wiki": "https://github.com/mjfk23/brightspace-api/wiki",
+    "source": "https://github.com/mjfk23/brightspace-api"
+  },
+  "require": {
+    "php": "^8.1",
+    "mjfk23/brightspace-api-core": "^2.0"
+  },
+  "require-dev": {
+    "mjfk23/gadget-code-style": "^1.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Brightspace\\Api\\": ["src/", "bundle/"]
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "phpstan/extension-installer": true,
+      "php-http/discovery": true
+    },
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "apcu-autoloader": true
+  },
+  "scripts": {
+    "phpcs": "vendor/bin/phpcs",
+    "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
+  }
+}

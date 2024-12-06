@@ -1,0 +1,6 @@
+parameters:
+        tmpDir: vendor/tmp/phpstan
+        level: 10
+        paths:
+                - bundle
+                - src
