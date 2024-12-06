@@ -74,7 +74,7 @@ final class ListEnrollmentUsers extends MessageHandler
         }
 
         $this->bookmark = $result->pagingInfo->bookmark;
-        if ($this->bookmark !== null) {
+        if ($this->bookmark !== null && $this->bookmark !== '') {
             yield from $this->invoke($this->getClient());
         }
     }

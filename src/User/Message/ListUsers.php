@@ -88,7 +88,7 @@ final class ListUsers extends MessageHandler
         }
 
         $this->bookmark = $bookmark;
-        if ($this->bookmark !== null) {
+        if ($this->bookmark !== null && $this->bookmark !== '') {
             yield from $this->invoke($this->getClient());
         }
     }

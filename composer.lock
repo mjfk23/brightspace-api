@@ -452,16 +452,16 @@
         },
         {
             "name": "mjfk23/brightspace-api-core",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mjfk23/brightspace-api-core.git",
-                "reference": "1c211297db9d77a19281a7d296c561aa007098a8"
+                "reference": "42be58b585e2b6493f22fef73ae61dffe101061e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mjfk23/brightspace-api-core/zipball/1c211297db9d77a19281a7d296c561aa007098a8",
-                "reference": "1c211297db9d77a19281a7d296c561aa007098a8",
+                "url": "https://api.github.com/repos/mjfk23/brightspace-api-core/zipball/42be58b585e2b6493f22fef73ae61dffe101061e",
+                "reference": "42be58b585e2b6493f22fef73ae61dffe101061e",
                 "shasum": ""
             },
             "require": {
@@ -499,7 +499,7 @@
                 "source": "https://github.com/mjfk23/brightspace-api-core",
                 "wiki": "https://github.com/mjfk23/brightspace-api-core/wiki"
             },
-            "time": "2024-12-06T17:08:23+00:00"
+            "time": "2024-12-06T19:41:52+00:00"
         },
         {
             "name": "mjfk23/gadget-cache",
@@ -667,16 +667,16 @@
         },
         {
             "name": "mjfk23/gadget-http",
-            "version": "v2.0.1",
+            "version": "v2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mjfk23/gadget-http.git",
-                "reference": "0c8118e55597650e290567e52a26706131770e9e"
+                "reference": "b77ac5cf09ee5149ba13b477bbcee6bfc56eddaf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mjfk23/gadget-http/zipball/0c8118e55597650e290567e52a26706131770e9e",
-                "reference": "0c8118e55597650e290567e52a26706131770e9e",
+                "url": "https://api.github.com/repos/mjfk23/gadget-http/zipball/b77ac5cf09ee5149ba13b477bbcee6bfc56eddaf",
+                "reference": "b77ac5cf09ee5149ba13b477bbcee6bfc56eddaf",
                 "shasum": ""
             },
             "require": {
@@ -722,7 +722,7 @@
                 "source": "https://github.com/mjfk23/gadget-http",
                 "wiki": "https://github.com/mjfk23/gadget-http/wiki"
             },
-            "time": "2024-12-06T17:03:47+00:00"
+            "time": "2024-12-06T19:39:11+00:00"
         },
         {
             "name": "mjfk23/gadget-log",
@@ -781,16 +781,16 @@
         },
         {
             "name": "mjfk23/gadget-oauth",
-            "version": "v2.0.0",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mjfk23/gadget-oauth.git",
-                "reference": "3972c07f3abc10470c8ae691d4b5270445a4fd01"
+                "reference": "f4c483759632f1bf0943ca62d485fdff4913889e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mjfk23/gadget-oauth/zipball/3972c07f3abc10470c8ae691d4b5270445a4fd01",
-                "reference": "3972c07f3abc10470c8ae691d4b5270445a4fd01",
+                "url": "https://api.github.com/repos/mjfk23/gadget-oauth/zipball/f4c483759632f1bf0943ca62d485fdff4913889e",
+                "reference": "f4c483759632f1bf0943ca62d485fdff4913889e",
                 "shasum": ""
             },
             "require": {
@@ -829,7 +829,7 @@
                 "source": "https://github.com/mjfk23/gadget-oauth",
                 "wiki": "https://github.com/mjfk23/gadget-oauth/wiki"
             },
-            "time": "2024-12-03T17:02:03+00:00"
+            "time": "2024-12-06T19:40:33+00:00"
         },
         {
             "name": "mjfk23/gadget-process",
