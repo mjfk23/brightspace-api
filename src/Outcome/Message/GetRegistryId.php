@@ -24,7 +24,7 @@ final class GetRegistryId extends MessageHandler
         return $requestBuilder
             ->setMethod('GET')
             ->setUri(sprintf(
-                'd2l://lp/orgstructure/%s/parents/',
+                'd2l://web/d2l/le/lo/%s/outcomes-management',
                 $this->orgUnitId,
             ))
             ->getRequest();
