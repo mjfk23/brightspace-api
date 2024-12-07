@@ -452,16 +452,16 @@
         },
         {
             "name": "mjfk23/brightspace-api-core",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mjfk23/brightspace-api-core.git",
-                "reference": "42be58b585e2b6493f22fef73ae61dffe101061e"
+                "reference": "7c160ec43780cb9c19e1d1f6743abb21a759f83b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mjfk23/brightspace-api-core/zipball/42be58b585e2b6493f22fef73ae61dffe101061e",
-                "reference": "42be58b585e2b6493f22fef73ae61dffe101061e",
+                "url": "https://api.github.com/repos/mjfk23/brightspace-api-core/zipball/7c160ec43780cb9c19e1d1f6743abb21a759f83b",
+                "reference": "7c160ec43780cb9c19e1d1f6743abb21a759f83b",
                 "shasum": ""
             },
             "require": {
@@ -499,7 +499,7 @@
                 "source": "https://github.com/mjfk23/brightspace-api-core",
                 "wiki": "https://github.com/mjfk23/brightspace-api-core/wiki"
             },
-            "time": "2024-12-06T19:41:52+00:00"
+            "time": "2024-12-07T20:24:48+00:00"
         },
         {
             "name": "mjfk23/gadget-cache",
