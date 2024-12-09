@@ -7,9 +7,7 @@ namespace Brightspace\Api\OrgUnit\Message;
 use Brightspace\Api\Core\Message\MessageHandler;
 use Brightspace\Api\Core\Model\PagedResultSet;
 use Brightspace\Api\OrgUnit\Model\OrgUnit;
-use Gadget\Http\Client\Client;
 use Gadget\Http\Message\RequestBuilder;
-use Gadget\Io\JSON;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

@@ -7,7 +7,6 @@ namespace Brightspace\Api\Outcome\Message;
 use Brightspace\Api\Core\Message\MessageHandler;
 use Brightspace\Api\Outcome\Model\OutcomeRegistry;
 use Gadget\Http\Message\RequestBuilder;
-use Gadget\Io\JSON;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
