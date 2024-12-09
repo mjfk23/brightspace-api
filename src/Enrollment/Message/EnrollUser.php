@@ -39,6 +39,8 @@ final class EnrollUser extends MessageHandler
         ResponseInterface $response,
         ServerRequestInterface $request
     ): mixed {
-        return $response->getStatusCode() === 200;
+        return $response->getStatusCode() === 200
+            ? true
+            : throw new \RuntimeException();
     }
 }
