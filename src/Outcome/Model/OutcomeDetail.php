@@ -45,7 +45,7 @@ final class OutcomeDetail implements \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'children' => $this->children
+            'children' => array_values($this->children)
         ];
     }
 }
